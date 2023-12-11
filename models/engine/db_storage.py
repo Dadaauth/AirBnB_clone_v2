@@ -19,7 +19,11 @@ class DBStorage:
     from ..place import Place
     from ..review import Review
 
-    __classes = [User, State, City, Amenity, Place, Review]
+    __classes = {
+               'User': User, 'Place': Place,
+               'State': State, 'City': City, 'Amenity': Amenity,
+               'Review': Review
+              }
 
     def __init__(self):
         """Initialization method of the DBStorage class
@@ -36,18 +40,20 @@ class DBStorage:
 
         if hbnb_env == 'test':
             Base.metadata.drop_all(bind=self.__engine)
+        self.reload()
 
     def all(self, cls=None):
         """Query all objects of a provided class
         """
         obj_dict = {}
-        if cls:
-            for obj in self.__session.scalars(select(cls)):
+        if cls is not None:
+            for obj in self.__session.query(self.__classes[cls]).all():
                 key = "{}.{}".format(obj.__class__.__name__, obj.id)
                 obj_dict[key] = obj.to_dict()
             return obj_dict
-        for cls in DBStorage.__classes:
-            for obj in self.__session.scalars(select(cls)):
+
+        for key in self.__classes.keys():
+            for obj in self.__session.query(self.__classes[key]).all():
                 key = "{}.{}".format(obj.__class__.__name__, obj.id)
                 obj_dict[key] = obj.to_dict()
         return obj_dict
@@ -65,7 +71,7 @@ class DBStorage:
     def delete(self, obj=None):
         """deletes obj from  the current database session
         """
-        if obj is not None:
+        if obj is not None and self.__session.is_modified(obj):
             self.__session.delete(obj)
 
     def reload(self):

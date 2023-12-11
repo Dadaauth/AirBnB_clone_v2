@@ -10,6 +10,8 @@ from models.state import State
 from models.city import City
 from models.amenity import Amenity
 from models.review import Review
+from datetime import datetime
+import uuid
 
 
 class HBNBCommand(cmd.Cmd):
@@ -115,16 +117,45 @@ class HBNBCommand(cmd.Cmd):
 
     def do_create(self, args):
         """ Create an object of any class"""
-        if not args:
+        # args = args.replace("_", " ")
+        parsed_args = self.parse_do_create_args(args)
+        args = parsed_args
+        if not args[0]:
             print("** class name missing **")
             return
-        elif args not in HBNBCommand.classes:
+        elif args[0] not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
-        new_instance = HBNBCommand.classes[args]()
-        storage.save()
+        arg_kwargs = args[1:]
+        kwargs = {}
+        for arg_list in arg_kwargs:
+            try:
+                kwargs[arg_list[0]] = int(arg_list[1])
+            except ValueError:
+                try:
+                    kwargs[arg_list[0]] = float(arg_list[1])
+                except ValueError:
+                    kwargs[arg_list[0]] = arg_list[1]
+        kwargs['created_at'] = datetime.now().isoformat()
+        kwargs['updated_at'] = datetime.now().isoformat()
+        kwargs['id'] = str(uuid.uuid4())
+        new_instance = HBNBCommand.classes[args[0]](**kwargs)
+        new_instance.save()
         print(new_instance.id)
         storage.save()
+
+    @staticmethod
+    def parse_do_create_args(args) -> list:
+        args = args.split()
+        for i, arg in enumerate(args):
+            if i > 0:
+                newlist = arg.split("=\"")
+                newlist[1] = newlist[1][:-1]
+                newlist[1] = newlist[1].replace('"', '\\"')
+                newlist[1] = newlist[1].replace("_", " ")
+                args[i] = newlist
+
+        return args
 
     def help_create(self):
         """ Help information for the create method """

@@ -147,14 +147,17 @@ class HBNBCommand(cmd.Cmd):
     @staticmethod
     def parse_do_create_args(args) -> list:
         args = args.split()
+        # print("args first: ", args)
         for i, arg in enumerate(args):
             if i > 0:
-                newlist = arg.split("=\"")
-                newlist[1] = newlist[1][:-1]
+                newlist = arg.split("=")
+                # print(newlist)
+                if newlist[1][-1] == '"' and newlist[1][0] == '"':
+                    newlist[1] = newlist[1][1:]
+                    newlist[1] = newlist[1][:-1]
                 newlist[1] = newlist[1].replace('"', '\\"')
                 newlist[1] = newlist[1].replace("_", " ")
                 args[i] = newlist
-
         return args
 
     def help_create(self):

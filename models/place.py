@@ -1,9 +1,13 @@
 #!/usr/bin/python3
 """ Place Module for HBNB project """
 from models.base_model import BaseModel, Base
-from sqlalchemy import Column, String, Integer, Float, ForeignKey
+from sqlalchemy import Column, String, Integer, Float, ForeignKey, Table
 from sqlalchemy.orm import relationship
 
+place_amenity = Table('place_amenity', Base.metadata,
+                      Column('place_id', String(60), ForeignKey('places.id'), primary_key=True, nullable=False),
+                      Column('amenity_id', String(60), ForeignKey('amenities.id'), primary_key=True, nullable=False)
+                      )
 
 class Place(BaseModel, Base):
     """ A place to stay """
@@ -20,6 +24,7 @@ class Place(BaseModel, Base):
     latitude = Column(Float, nullable=True)
     longitude = Column(Float, nullable=True)
     amenity_ids = []
+    amenities = relationship('Amenity', secondary='place_amenity', viewonly=False)
 
     reviews = relationship('Review', backref="place", cascade="all, delete-orphan")
 
@@ -28,3 +33,15 @@ class Place(BaseModel, Base):
         from models import storage
         from review import Review
         return [review for review in storage.all(Review).values() if review.id == self.id]
+
+    @property
+    def amenities(self):
+        from models import storage
+        from amenity import Amenity
+        return [amenity for amenity in storage.all(Amenity).values() if amenity.id == self.id]
+
+    @amenities.setter
+    def amenities(self, obj):
+        from amenity import Amenity
+        if type(obj) == Amenity:
+            self.amenity_ids.append(obj.id)

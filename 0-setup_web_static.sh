@@ -3,11 +3,21 @@
 sudo apt-get update
 sudo apt-get upgrade
 sudo apt install nginx -y
-sudo mkdir /data/
-sudo mkdir /data/web_static
-sudo mkdir /data/web_static/releases
-sudo mkdir /data/web_static/shared
-sudo mkdir /data/web_static/releases/test
+
+
+d1="/data/"
+d2="/data/web_static"
+d3="/data/web_static/releases"
+d4="/data/web_static/shared"
+d5="/data/web_static/releases/test"
+
+[ -d $d1 ] && sudo mkdir $d1;
+[ -d $d2 ] && sudo mkdir $d2;
+[ -d $d3 ] && sudo mkdir $d3;
+[ -d $d4 ] && sudo mkdir $d4;
+[ -d $d5 ] && sudo mkdir $d5;
+
+
 sudo touch /data/web_static/releases/test/index.html
 sudo echo "test index file" > /data/web_static/releases/test/index.html
 
@@ -38,11 +48,22 @@ sudo chown -R ubuntu:ubuntu "$data_path"
 # ~~~ Configure nginx to serve the content of /data/web_static/current
 # ~~~ to '/hbnb_static' endpoint.
 
+# nginx_config_location="/etc/nginx/sites-available/default"
+
+# nginx_config_update="location /hbnb_static/ {\n\talias /data/web_static/current/;\n}"
+
+# sudo sed -i "/^\s*server \{/,/^\s*\}/ {/^\s*server \{/!{/^\s*\}/!{/$/!{N;s/\n/$nginx_config_update\n/}}}}" $nginx_config_location
+
+# Define the path to the Nginx configuration file
 nginx_config_location="/etc/nginx/sites-available/default"
 
-nginx_config_update="location /hbnb_static/ {\n\talias /data/web_static/current/;\n}"
+# Define the alias and location in the Nginx configuration
+nginx_config_update="location \/hbnb_static\/ {\\n\talias \/data\/web_static\/current\/;\\n}"
 
-sudo sed -i "/^\s*server \{/,/^\s*\}/ {/^\s*server \{/!{/^\s*\}/!{/$/!{N;s/\n/$nginx_config_update\n/}}}}" $nginx_config_location
+# Use sed to update the Nginx configuration file
+sudo sed -i "/^\s*server {/,/^\s*}/ s@location / {@$nginx_config_update@" $nginx_config_location
+
+
 
 sudo nginx -s reload
 

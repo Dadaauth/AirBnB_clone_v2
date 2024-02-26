@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # A script to prepare a web server for deployment
-sudo apt-get update -y
-sudo apt-get upgrade -y
+# sudo apt-get update -y
+# sudo apt-get upgrade -y
 sudo apt install nginx -y
 
 

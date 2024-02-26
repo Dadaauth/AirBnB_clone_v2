@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # A script to prepare a web server for deployment
-sudo apt-get update
-sudo apt-get upgrade
+sudo apt-get update -y
+sudo apt-get upgrade -y
 sudo apt install nginx -y
 
 
@@ -11,11 +11,11 @@ d3="/data/web_static/releases"
 d4="/data/web_static/shared"
 d5="/data/web_static/releases/test"
 
-[ -d $d1 ] && sudo mkdir $d1;
-[ -d $d2 ] && sudo mkdir $d2;
-[ -d $d3 ] && sudo mkdir $d3;
-[ -d $d4 ] && sudo mkdir $d4;
-[ -d $d5 ] && sudo mkdir $d5;
+[ ! -d "$d1" ] && sudo mkdir -p "$d1";
+[ ! -d "$d2" ] && sudo mkdir -p "$d2";
+[ ! -d "$d3" ] && sudo mkdir -p "$d3";
+[ ! -d "$d4" ] && sudo mkdir -p "$d4";
+[ ! -d "$d5" ] && sudo mkdir -p "$d5";
 
 
 sudo touch /data/web_static/releases/test/index.html

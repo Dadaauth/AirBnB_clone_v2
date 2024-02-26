@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 # A script to prepare a web server for deployment
 
-# sudo apt-get update -y
-# sudo apt-get upgrade -y
-sudo apt install nginx -y
+apt-get -y update
+apt-get -y install nginx
+ufw allow 'Nginx HTTP'
+echo 'Hello World!' > /var/www/html/index.nginx-debian.html
 
 
 d1="/data/"
@@ -65,6 +66,6 @@ regexp="location \/ {"
 new_data="location \/hbnb_static\/ {\n\t\talias \/data\/web_static\/current\/;\n\t}\n\t&"
 sudo sed -i "0,/$regexp/s//$new_data/" $nginx_config_location
 
-sudo nginx -s reload
+/etc/init.d/nginx restart
 
 # ~~~~ Configure nginx

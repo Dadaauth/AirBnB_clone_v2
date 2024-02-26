@@ -19,7 +19,7 @@ d5="/data/web_static/releases/test"
 
 
 sudo touch /data/web_static/releases/test/index.html
-sudo echo "test index file" > /data/web_static/releases/test/index.html
+echo "test index file" > sudo tee /data/web_static/releases/test/index.html
 
 # Create Symbolic Link Here
 web_static_path="/data/web_static"

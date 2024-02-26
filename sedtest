@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+nginx_config_location="/etc/nginx/sites-available/default"
+
+regexp="location \/ {"
+new_data="location \/hbnb_static\/ {\n\t\talias \/data\/web_static\/current\/;\n\t}\n\t&"
+sudo sed -i "0,/$regexp/s//$new_data/" $nginx_config_location

@@ -48,22 +48,11 @@ sudo chown -R ubuntu:ubuntu "$data_path"
 # ~~~ Configure nginx to serve the content of /data/web_static/current
 # ~~~ to '/hbnb_static' endpoint.
 
-# nginx_config_location="/etc/nginx/sites-available/default"
-
-# nginx_config_update="location /hbnb_static/ {\n\talias /data/web_static/current/;\n}"
-
-# sudo sed -i "/^\s*server \{/,/^\s*\}/ {/^\s*server \{/!{/^\s*\}/!{/$/!{N;s/\n/$nginx_config_update\n/}}}}" $nginx_config_location
-
-# Define the path to the Nginx configuration file
 nginx_config_location="/etc/nginx/sites-available/default"
 
-# Define the alias and location in the Nginx configuration
-nginx_config_update="location \/hbnb_static\/ {\\n\talias \/data\/web_static\/current\/;\\n}"
-
-# Use sed to update the Nginx configuration file
-sudo sed -i "/^\s*server {/,/^\s*}/ s@location / {@$nginx_config_update@" $nginx_config_location
-
-
+regexp="location \/ {"
+new_data="location \/hbnb_static\/ {\n\t\talias \/data\/web_static\/current\/;\n\t}\n\t&"
+sudo sed -i "0,/$regexp/s//$new_data/" $nginx_config_location
 
 sudo nginx -s reload
 

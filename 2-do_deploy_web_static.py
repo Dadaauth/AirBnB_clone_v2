@@ -33,7 +33,8 @@ def do_deploy(archive_path):
     archive_name_ext = archive_path[9:]
     archive_name = archive_path[9:-4]
     try:
-        put(local_path=archive_path, remote_path='/tmp/', use_sudo=True, mirror_local_mode=True)
+        put(local_path=archive_path, remote_path='/tmp/',
+            use_sudo=True, mirror_local_mode=True)
     except Exception as e:
         return False
     extract_folder = f"/data/web_static/releases/{archive_name}"

@@ -4,6 +4,7 @@ from fabric.api import *
 import os
 
 
+@runs_once
 def do_pack():
     """A fabric function to conpress files"""
     local('if [ ! -d "versions" ];'
@@ -17,11 +18,6 @@ def do_pack():
     if result.stdout != '0':
         return None
     return comp_filename
-
-
-env.user = "ubuntu"
-env.hosts = ["100.25.38.3", "100.24.240.234"]
-env.key_filename = ["~/alxswe/ssh_key"]
 
 
 def do_deploy(archive_path):
@@ -50,9 +46,16 @@ def do_deploy(archive_path):
     return True
 
 
+# You can also pass these variables via the
+# Command line i.e -u ubuntu -i ssh_key
+# env.user = "ubuntu"
+env.hosts = ["100.25.38.3", "100.24.240.234"]
+# env.key_filename = ["~/alxswe/ssh_key"]
+
+
 def deploy():
     """Does the archiving and deployment tasks """
     created_archive = do_pack()
-    if created_archive is None: 
+    if created_archive is None:
         return False
     return do_deploy(created_archive)

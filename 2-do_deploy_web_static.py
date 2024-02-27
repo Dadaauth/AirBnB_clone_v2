@@ -4,6 +4,7 @@ from fabric.api import *
 import os
 
 
+@runs_once
 def do_pack():
     """A fabric function to conpress files"""
     local('if [ ! -d "versions" ];'
@@ -14,15 +15,16 @@ def do_pack():
     command = f"tar -cvzf {comp_filename} web_static"
     local(command)
     result = local("echo $?", capture=True)
-    if result != 0:
+    if result.stdout != '0':
         return None
-    else:
-        return comp_filename
+    return comp_filename
 
 
-env.user = "ubuntu"
+# You can also pass these variables via the
+# Command line i.e -u ubuntu -i ssh_key
+# env.user = "ubuntu"
 env.hosts = ["100.25.38.3", "100.24.240.234"]
-env.key_filename = ["~/alxswe/ssh_key"]
+# env.key_filename = ["~/alxswe/ssh_key"]
 
 
 def do_deploy(archive_path):

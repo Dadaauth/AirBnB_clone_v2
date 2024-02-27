@@ -3,6 +3,7 @@
 from fabric.api import *
 
 
+@runs_once
 def do_pack():
     """A fabric function to conpress files"""
     local('if [ ! -d "versions" ];'
@@ -13,7 +14,6 @@ def do_pack():
     command = f"tar -cvzf {comp_filename} web_static"
     local(command)
     result = local("echo $?", capture=True)
-    if result != 0:
+    if result.stdout != '0':
         return None
-    else:
-        return comp_filename
+    return comp_filename

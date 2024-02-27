@@ -5,7 +5,8 @@ from fabric.api import *
 
 def do_pack():
     """A fabric function to conpress files"""
-    local('if [ ! -d "versions" ]; then\n\t\tmkdir "versions"\n\tfi', capture=True)
+    local('if [ ! -d "versions" ];'
+          'then\n\t\tmkdir "versions"\n\tfi', capture=True)
 
     dt = local("date '+%Y%m%d%H%M%S'", capture=True)
     comp_filename = f"versions/web_static_{dt}.tgz"

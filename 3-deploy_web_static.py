@@ -51,6 +51,7 @@ def do_deploy(archive_path):
 
 
 def deploy():
+    """Does the archiving and deployment tasks """
     created_archive = do_pack()
     if created_archive is None: 
         return False

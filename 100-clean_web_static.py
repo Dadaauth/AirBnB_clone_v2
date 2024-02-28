@@ -74,6 +74,9 @@ def extract_files_to_remove(directory, number, env):
         filenames = os.listdir(directory)
     filenames.sort(reverse=True)
 
+    if len(filenames) <= 1:
+        return None
+
     if number > len(filenames) - 1:
         print(f'number more than expected range'
               f'[0-{len(filenames) - 1}] got [{number}]')
@@ -90,7 +93,7 @@ def extract_files_to_remove(directory, number, env):
 def remove_local(number=0):
     """Remove the non-needed files from the local machine"""
     filenames = extract_files_to_remove('versions', number, 'local')
-    if filenames == None:
+    if filenames is None:
         return None
     # Loop through the remaining list of filenames
     # and delete them all from the filesystem
@@ -107,7 +110,7 @@ def do_clean(number=0):
     remove_local(number)
     directory = '/data/web_static/releases'
     filenames = extract_files_to_remove(directory, number, 'remote')
-    if filenames == None:
+    if filenames is None:
         return None
     for filename in filenames:
         if filename[:11] == "web_static_":

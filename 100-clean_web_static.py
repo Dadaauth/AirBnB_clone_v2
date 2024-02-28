@@ -62,6 +62,8 @@ def deploy():
 
 
 def extract_files_to_remove(directory, number, env):
+    """ Extracts the filenames that is needed to be removed
+    """
     if env == 'remote':
         filenames = run(f'find {directory} -mindepth'
                         f'1 -maxdepth 1 -type d -exec basename {{}} \\;')
@@ -76,6 +78,7 @@ def extract_files_to_remove(directory, number, env):
         print(f'number more than expected range'
               f'[0-{len(filenames) - 1}] got [{number}]')
         print('continuing ....')
+        return None
     elif number == 0 or number == 1:
         filenames = filenames[1:]
     else:
@@ -85,7 +88,10 @@ def extract_files_to_remove(directory, number, env):
 
 @runs_once
 def remove_local(number=0):
+    """Remove the non-needed files from the local machine"""
     filenames = extract_files_to_remove('versions', number, 'local')
+    if filenames == None:
+        return None
     # Loop through the remaining list of filenames
     # and delete them all from the filesystem
     for filename in filenames:
@@ -96,10 +102,13 @@ def remove_local(number=0):
 
 
 def do_clean(number=0):
+    """Cleans both the local storage and the remote storage"""
     number = int(number)
-    # remove_local(number)
+    remove_local(number)
     directory = '/data/web_static/releases'
     filenames = extract_files_to_remove(directory, number, 'remote')
+    if filenames == None:
+        return None
     for filename in filenames:
         if filename[:11] == "web_static_":
             run(f"rm -rf {directory}/{filename}")

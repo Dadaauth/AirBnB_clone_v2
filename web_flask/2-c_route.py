@@ -21,7 +21,7 @@ def hbnb():
 
 @app.route('/c/<text>', strict_slashes=False)
 def c_is_fun(text=None):
-    to_return = f"c{text.replace('_', ' ')}"
+    to_return = f"C {text.replace('_', ' ')}"
     return to_return
 
 
